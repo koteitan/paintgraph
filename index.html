@@ -25,10 +25,12 @@
 <body>
 <h2>Paint Graph</h2>
 <form name="form0">
-  size = <input type=input name='size' value=8>
-  <input type=button name='button' value=draw onclick="javascript:initGraph();procDraw();">
+  cells: <input type=input name='size' value=3>
+  <input type=button name='button_draw' value=draw onclick="javascript:startDraw();">
+  <input type=button name='button_resize' value=resize onclick="javascript:resize();">
+  <span id="msgout">change cells or resize</span>
 </form>
-<canvas id="outcanvas" width=600px height=600px style="border-style:solid"></canvas><br>
+<canvas id="outcanvas" width=300px height=300px style="border-style:solid"></canvas><br>
 
 <address id="address">Paint Graph<br>
   Idea by <a href='https://twitter.com/1Hassium/status/1157151976796241922/photo/1'>Hassium</a><br>

@@ -1,10 +1,17 @@
 // fields--------------------
-var N=6;
+var N;
 var linelist;
 //entry point--------------------
 window.onload = function(){
   initGraph();
   initDraw();
+  initGraph();
+  procDraw();
+}
+var startDraw=function(){
+  document.getElementById("msgout").innerHTML="now drawing...";
+  initGraph();
+  setTimeout(procDraw,100);
 }
 //graph------------------
 var linelist=[];
@@ -39,6 +46,7 @@ var reduceFraction = function(input){
     n=-n;
     d=-d;
   }
+  if(n==0&&d==0)return[n,d];
   if(n==0)d=1;
   if(d==0)n=1;
   for(var r=[n,d].min();r>1;r--){
@@ -60,6 +68,7 @@ var vertex2isec=function(input){
   var dx,dy;
   [dy,dx]=reduceFraction([y1-y0,x1-x0]); // dy/dx
   return [
+    [dy,dx],
     reduceFraction([x0*dy-dx*y0, dy]), // intersection to y=0
     reduceFraction([y0*dx-dy*x0, dx]), // intersection to x=0
   ];
@@ -73,7 +82,7 @@ var procAll=function(){
   }
 }
 // html ----------------------------
-window.onresize = function(){ //browser resize
+resize = function(){ //browser resize
   var wx,wy;
   wx= [(document.documentElement.clientWidth-10)*0.99, 320].max();
   wy= [(document.documentElement.clientHeight-200), 20].max();
@@ -106,17 +115,43 @@ var procDraw = function(){
   //processing
   for(var xi=0;xi<xs;xi++){ 
     for(var yi=0;yi<ys;yi++){ 
+
+      var x=xi/xs*N;
+      var y=yi/ys*N;
+      var f=0;
+      for(var li=0;li<linelist.length;li++){
+        var dy,dx,ixn,ixd,iyn,iyd;
+        var [[dy,dx],[ixn,ixd],[iyn,iyd]]=linelist[li];
+        var vx1,vy1,vx2,vy2;
+        if(ixn==0 && iyn==0){ // (0,0)--(dx,dy)
+          vx1=x;
+          vy1=y;
+          vx2=dx;
+          vy2=dy;
+        }else{ // otherwise (0,ix)--(iy,0)
+          var ix=ixn/ixd;
+          var iy=iyn/iyd;
+          vx1=ix-x;
+          vy1= 0-y;
+          vx2= 0-x;
+          vy2=iy-y;
+        }
+        outer = vx1*vy2-vy1*vx2;
+        if(outer<0) f=f+1; 
+      }
+
+      var c=(f%2)*255;
+
       var base=(yi*xs+xi)*4;
-      var r=(xi+yi)%2;
-      var c=r*255;
       data[base+0]=c;
       data[base+1]=c;
       data[base+2]=c;
       data[base+3]=255;
-    }
+    }//yi
   }
   //output
   ctx.putImageData(imageData,0,0);
+  document.getElementById("msgout").innerHTML="done.";
 }
 
 
