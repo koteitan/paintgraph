@@ -33,12 +33,15 @@ var initGraph=function(){
     }
   }
 }
+/* reduceFraction([n,d]) returns fraction-reduced rational number n/d. */
 var reduceFraction = function(input){
   [n,d]=input;
   if(d<0){
     n=-n;
     d=-d;
   }
+  if(n==0)d=1;
+  if(d==0)n=1;
   for(var r=[n,d].min();r>1;r--){
     if(n%r==0 && d%r==0){
       n/=r;
@@ -47,14 +50,17 @@ var reduceFraction = function(input){
   }
   return [n,d];
 }
+/* [ix,iy] = vertex2isec([x0,y0,x1,y1]) converts the representation of line (x0,y0)--(x1,y1) to two intersections (ix,0)--(iy,0). 
+ * in: [x0,y0,x1,y1]
+ * out: [ix,iy]
+ *  ix=[ix_numer, ix_denom] = intersection to y=0 is (ix_numer/ix_denom, 0).
+ *  iy=[iy_numer, iy_denom] = intersection to x=0 is (0, iy_numer/iy_denom).
+ *  */
 var vertex2isec=function(input){
   [x0,y0,x1,y1]=input;
   var dx,dy;
   [dy,dx]=reduceFraction([y1-y0,x1-x0]); // dy/dx
-  if(dx==0) dy=1;
-  if(dy==0) dx=1;
   return [
-    [dy,dx],// x0+dxs = a dy+dys = 0
     reduceFraction([x0*dy-dx*y0, dy]), // intersection to y=0
     reduceFraction([y0*dx-dy*x0, dx]), // intersection to x=0
   ];
