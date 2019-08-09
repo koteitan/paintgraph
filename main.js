@@ -5,7 +5,6 @@ var linelist;
 window.onload = function(){
   initGraph();
   initDraw();
-  procDraw();
 }
 //graph------------------
 var linelist=[];
@@ -99,4 +98,29 @@ var procDraw = function(){
   //background
   ctx.fillStyle="white";
   ctx.fillRect(0,0,can.width, can.height);
+  //pick up
+  var imageData=ctx.getImageData(0,0, can.width, can.height);
+  var data=imageData.data;
+  var xs=imageData.width;
+  var ys=imageData.height;
+  //processing
+  for(var xi=0;xi<xs;xi++){ 
+    for(var yi=0;yi<ys;yi++){ 
+      var base=(yi*xs+xi)*4;
+      var r=(xi+yi)%2;
+      var c=r*255;
+      data[base+0]=c;
+      data[base+1]=c;
+      data[base+2]=c;
+      data[base+3]=255;
+    }
+  }
+  //output
+  ctx.putImageData(imageData,0,0);
 }
+
+
+
+
+
+
